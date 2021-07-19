@@ -12,7 +12,7 @@ namespace Verification.Attributes
         {
             var objectResult = context.Result as ObjectResult;
             context.Result = new OkObjectResult(new BaseResultModel(objectResult?.StatusCode,
-                objectResult?.StatusCode == 200 ? objectResult.Value : null,
+                objectResult?.Value,
                 objectResult?.StatusCode != 200 ? $"{objectResult?.Value}" : "Successful"));
         }
     }

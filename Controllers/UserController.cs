@@ -29,7 +29,7 @@ namespace Verification.Controllers
         [ApiResultFilter]
         [GenerateVCode(1800)]
         [HttpPost("getVerificationCodeByEmail")]
-        public async Task<IActionResult> GetVerificationCodeByEmail(Parameters parameters)
+        public async Task<IActionResult> GetVerificationCodeByEmail([FromBody] Parameters parameters)
         {
             if (await _userRepo.IsExisted(parameters.Email))
             {
@@ -55,10 +55,10 @@ namespace Verification.Controllers
             }
 
             // To check if the email and vCode is correct;
-            if (bool.Parse(vCode))
-            {
-                return BadRequest("The vCode is invalid");
-            }
+            // if (false)
+            // {
+            //     return BadRequest("The vCode is invalid");
+            // }
 
             return Ok(await _userRepo.Create(_mapper.Map<User>(userCreateDto)));
         }
