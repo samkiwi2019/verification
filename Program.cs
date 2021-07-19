@@ -20,7 +20,7 @@ namespace Verification
             Host.CreateDefaultBuilder(args)
                 .ConfigureLogging(logging =>
                 {
-                    logging.AddLog4Net("CfgFile/log4Net.Config");
+                    logging.AddLog4Net("CfgFile/log4net.Config");
                 })
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
