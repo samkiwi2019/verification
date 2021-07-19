@@ -4,20 +4,10 @@ using Verification.Models;
 
 namespace Verification.Data.Repos
 {
-    public class UserRepo : IUserRepo
+    public class UserRepo : CommonRepo<User>, IUserRepo
     {
-        private readonly MyContext _ctx;
-
-        protected UserRepo(MyContext context)
+        public UserRepo(MyContext context) : base(context)
         {
-            _ctx = context;
-        }
-
-        public async Task<User> CreateUser(User user)
-        {
-            var result = await _ctx.AddAsync(user);
-            await _ctx.SaveChangesAsync();
-            return result.Entity;
         }
     }
 }

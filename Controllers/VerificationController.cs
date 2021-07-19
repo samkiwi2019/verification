@@ -1,20 +1,34 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Verification.Data.IRepos;
+using Verification.Dtos;
 using Verification.Filters;
+using Verification.Models;
 
 namespace Verification.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api")]
     public class VerificationController : ControllerBase
     {
-        [ServiceFilter(typeof(CustomExceptionFilter))]
-        [HttpGet]
-        public IEnumerable Get()
+        private readonly IUserRepo _userRepo;
+        private readonly IMapper _mapper;
+
+        public VerificationController(IUserRepo productRepo, IMapper mapper)
         {
-            throw new Exception("我是醬爆，我要爆了!!!");
+            _userRepo = productRepo;
+            _mapper = mapper;
+        }
+
+        [ServiceFilter(typeof(CustomExceptionFilter))]
+        [HttpPost("getVerificationCodeByEmail")]
+        public async Task<IActionResult> GetVerificationCodeByEmail(UserCreateDto userCreateDto)
+        {
+            return Ok(await _userRepo.Create(_mapper.Map<User>(userCreateDto)));
         }
     }
 }

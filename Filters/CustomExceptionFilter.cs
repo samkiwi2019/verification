@@ -8,9 +8,9 @@ namespace Verification.Filters
 {
     public class CustomExceptionFilter : IExceptionFilter
     {
-        private ILogger _logger;
+        private readonly ILogger<CustomExceptionFilter> _logger;
 
-        public CustomExceptionFilter(ILogger logger)
+        public CustomExceptionFilter(ILogger<CustomExceptionFilter> logger)
         {
             _logger = logger;
         }

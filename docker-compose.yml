@@ -11,8 +11,8 @@ services:
     ports:
       - "5000:80"
     depends_on:
-      - db-dict
-      - redis
+      - v-db-server
+      - v-redis-server
     networks:
       - localdev
 

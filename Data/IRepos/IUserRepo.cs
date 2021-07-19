@@ -5,8 +5,8 @@ using Verification.Models;
 
 namespace Verification.Data.IRepos
 {
-    public interface IUserRepo
+    public interface IUserRepo: ICommonRepo<User>
     {
-        Task<User> CreateUser(User user);
+        
     }
 }
