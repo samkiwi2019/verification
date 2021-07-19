@@ -1,0 +1,43 @@
+version: "3.8"
+
+networks:
+  localdev:
+    name: localdev
+
+services:
+  main-api:
+    build: .
+    restart: always
+    ports:
+      - "5000:80"
+    depends_on:
+      - db-dict
+      - redis
+    networks:
+      - localdev
+
+  v-db-server:
+    image: mysql:8.0.23
+    container_name: v-db-server
+    environment:
+      MYSQL_ROOT_PASSWORD: "66778899"
+      MYSQL_DATABASE: "DbVerification"
+    volumes:
+      - ~/data/mysql:/var/lib/mysql 
+    ports:
+      - "13306:3306"
+    security_opt:
+      - seccomp:unconfined
+    networks:
+      - localdev
+  
+  v-redis-server:
+    image: redis
+    container_name: v-redis-server
+    volumes:
+      - ~/data/redis:/data
+    ports:
+      - "16379:6379"
+    networks:
+      - localdev
+  

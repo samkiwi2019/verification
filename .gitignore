@@ -5,7 +5,3 @@ riderModule.iml
 /_ReSharper.Caches/
 .idea/
 dist/
-
-appsettings.json
-docker-compose.yml
-
