@@ -8,13 +8,13 @@ namespace Verification.Data.Repos
 {
     public abstract class CommonRepo<T> : ICommonRepo<T> where T : BaseEntity
     {
-        private readonly MyContext _ctx;
-        private readonly DbSet<T> _dbSet;
+        protected readonly MyContext Ctx;
+        protected readonly DbSet<T> DbSet;
         
         protected CommonRepo(MyContext context)
         {
-            _ctx = context;
-            _dbSet = context.Set<T>();
+            Ctx = context;
+            DbSet = context.Set<T>();
         }
         
         public virtual async Task<T> Create(T t)
@@ -23,8 +23,8 @@ namespace Verification.Data.Repos
             {
                 throw new ArgumentException(nameof(t));
             }
-            var result = await _dbSet.AddAsync(t);
-            await _ctx.SaveChangesAsync();
+            var result = await DbSet.AddAsync(t);
+            await Ctx.SaveChangesAsync();
             return result.Entity;
         }
     }

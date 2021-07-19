@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Verification.Data.IRepos;
 using Verification.Data.Repos;
-using Verification.Filters;
 
 namespace Verification.Installers
 {
@@ -23,7 +22,6 @@ namespace Verification.Installers
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IUserRepo, UserRepo>();
-            services.AddScoped<CustomExceptionFilter>();
         }
     }
 }

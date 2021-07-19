@@ -1,16 +1,13 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Verification.Dtos
+namespace Verification.Models
 {
-    public class UserCreateDto
+    public class User : BaseEntity
     {
         [Required] [StringLength(100)] public string FullName { get; set; }
 
         [Required] [Phone] public string Phone { get; set; }
 
         [Required] [EmailAddress] public string Email { get; set; }
-
-        [Required] public string VCode { get; set; } // for verifying email. will not be written into the database;
     }
 }

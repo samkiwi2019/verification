@@ -7,6 +7,6 @@ namespace Verification.Data.IRepos
 {
     public interface IUserRepo: ICommonRepo<User>
     {
-        
+        public Task<bool> IsExisted(string email);
     }
 }
