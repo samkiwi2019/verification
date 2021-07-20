@@ -7,11 +7,15 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Verification.Api/Verification.Api.csproj",
+                "${workspaceFolder}/build.proj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         },
         {
             "label": "publish",
@@ -37,6 +41,55 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: debug",
+            "dependsOn": ["build"],
+            "dockerBuild": {
+                "tag": "Verification:dev",
+                "target": "base",
+                "dockerfile": "${workspaceFolder}/Verification.Api/Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/Verification.Api/Verification.Api.csproj"
+            }
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: release",
+            "dependsOn": ["build"],
+            "dockerBuild": {
+                "tag": "Verification:latest",
+                "dockerfile": "${workspaceFolder}/Verification.Api/Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/Verification.Api/Verification.Api.csproj"
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: debug",
+            "dependsOn": ["docker-build: debug"],
+            "dockerRun": {},
+            "netCore": {
+                "appProject": "${workspaceFolder}/Verification.Api/Verification.Api.csproj",
+                "enableDebugging": true,
+                "configureSsl": false
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: release",
+            "dependsOn": ["docker-build: release"],
+            "dockerRun": {},
+            "netCore": {
+                "appProject": "${workspaceFolder}/Verification.Api/Verification.Api.csproj"
+            }
         }
     ]
 }

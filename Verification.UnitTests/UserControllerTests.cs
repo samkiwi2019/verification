@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Verification.Controllers;
-using Verification.Data.IRepos;
-using Verification.Dtos;
-using Verification.Models;
+using Verification.Api.Controllers;
+using Verification.Api.Data.IRepos;
+using Verification.Api.Dtos;
+using Verification.Api.Models;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,7 +18,7 @@ namespace Verification.UnitTests
         private readonly ITestOutputHelper _testOutputHelper;
         private readonly Mock<IUserRepo> _repositoryStub = new();
         private readonly Mock<ILogger<UserController>> _loggerStub = new();
-        private readonly Mock<Mapper> _mapper = new();
+        private readonly Mock<IMapper> _mapper = new();
         private readonly Random _rand = new();
 
         public UserControllerTests(ITestOutputHelper testOutputHelper)
@@ -31,7 +31,7 @@ namespace Verification.UnitTests
         {
             // Arrange
             var expectedUserCreateDto = CreateRandomUser();
-            _repositoryStub.Setup(repo => repo.CreateAsync(It.IsAny<User>()))
+            _repositoryStub.Setup(repo => repo.Create(It.IsAny<User>()))
                 .ReturnsAsync(expectedUserCreateDto);
             var controller = new UserController(_repositoryStub.Object, _mapper.Object, _loggerStub.Object);
 
@@ -48,6 +48,7 @@ namespace Verification.UnitTests
             // Assert
             var createdItem = result;
             _testOutputHelper.WriteLine(createdItem.ToString());
+
         }
 
         private User CreateRandomUser()
