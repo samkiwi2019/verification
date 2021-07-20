@@ -3,13 +3,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using Verification.EmailSender;
 using Verification.Services;
+using MailKit.Net.Smtp;
+using MimeKit;
 
 namespace Verification.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class GenerateVCodeAttribute : Attribute, IAsyncActionFilter
+    public sealed class GenerateVCodeAttribute : Attribute, IAsyncActionFilter
     {
         private readonly int _timeToLiveSeconds;
 
@@ -26,10 +27,11 @@ namespace Verification.Attributes
                 await next();
                 return;
             }
-
-            var email = GetValueByKey(context, "Email");
+            // wait for controllers 
             var executedContext = await next();
-            if (executedContext.Result is OkObjectResult)
+            // controllers have finished and ready for response
+            var email = GetValueByKey(context, "Email");
+            if (executedContext.Result is OkObjectResult && email is not null)
             {
                 var rd = new Random();
                 var vCode = rd.Next(10000, 100000).ToString();
@@ -38,7 +40,7 @@ namespace Verification.Attributes
                     TimeSpan.FromSeconds(_timeToLiveSeconds));
 
                 // notice email sender to work
-                await Sender.Run(email, vCode);
+                await Send(email, vCode);
             }
         }
 
@@ -57,6 +59,40 @@ namespace Verification.Attributes
             }
 
             return email;
+        }
+
+        private Task Send(string email, string vCode)
+        {
+            try
+            {
+                return Task.Run(() =>
+                {
+                    var message = new MimeMessage();
+                    message.From.Add(new MailboxAddress("Sam", "sam.vc.info@gmail.com"));
+                    message.To.Add(new MailboxAddress(email, email));
+                    message.Subject = "Verification Code";
+
+                    message.Body = new TextPart("plain")
+                    {
+                        Text = $@"Your Verification Code is [{vCode}], and it will expire after 30 minutes!"
+                    };
+
+                    using (var client = new SmtpClient())
+                    {
+                        client.Connect("smtp.gmail.com", 465, true);
+                        client.Authenticate("sam.vc.info@gmail.com", "samsamsam123");
+                        client.Send(message);
+                        client.Disconnect(true);
+                    }
+                    Console.WriteLine("sending successful");
+                });
+
+            }
+            catch (Exception ex)
+            {
+                var message = $"sending a email failed. {email} - {ex.Message}";
+                throw new ApplicationException(message);
+            }
         }
     }
 }
