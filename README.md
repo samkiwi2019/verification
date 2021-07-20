@@ -36,6 +36,6 @@
 
 ## Notes
 
-It can be used in Vscode smoothly.
+The project can run in VsCode smoothly.
 
 There may be a problem that the smart hint does not work on Rider IDE. The reason is that the project contains 2 solutions. Rider cannot find the correct csproj. You can switch the project to "backup" branch. There is no unit test content in this branch.
