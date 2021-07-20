@@ -7,5 +7,6 @@ namespace Verification.Services
     {
         Task CacheResponseAsync(string cacheKey, object response, TimeSpan timeToLiveSeconds);
         Task<string> GetCachedResponseAsync(string cacheKey);
+        Task RemoveCacheByKey(string cacheKey);
     }
 }

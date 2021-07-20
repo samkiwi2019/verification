@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Verification.Attributes;
-using Verification.Data;
 using Verification.Data.IRepos;
 using Verification.Dtos;
 using Verification.Models;
@@ -31,36 +31,42 @@ namespace Verification.Controllers
         [HttpPost("getVerificationCodeByEmail")]
         public async Task<IActionResult> GetVerificationCodeByEmail([FromBody] Parameters parameters)
         {
-            if (await _userRepo.IsExisted(parameters.Email))
+            try
             {
-                return BadRequest("The email has been occupied");
-            }
+                if (await _userRepo.IsExisted(parameters.Email))
+                {
+                    return BadRequest("The email has been occupied");
+                }
 
-            return Ok("The verification code has been sent!");
+                return Ok("The verification code has been sent!");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "getVerificationCodeByEmail");
+                throw;
+            }
         }
 
 
         [ApiResultFilter]
+        [VerifyVCode]
         [HttpPost("createCustomerByEmail")]
         public async Task<IActionResult> CreateCustomerByEmail(UserCreateDto userCreateDto)
         {
-            // todo: verify userCreateDto.vCode with session if it is correct;
-            var vCode = userCreateDto.VCode;
-            var email = userCreateDto.Email;
-
-            // To Verify if the email is existed;
-            if (await _userRepo.IsExisted(email))
+            try
             {
-                return BadRequest("The email has been occupied");
+                if (await _userRepo.IsExisted(userCreateDto.Email))
+                {
+                    return BadRequest("The email has been occupied");
+                }
+
+                return Ok(await _userRepo.Create(_mapper.Map<User>(userCreateDto)));
             }
-
-            // To check if the email and vCode is correct;
-            // if (false)
-            // {
-            //     return BadRequest("The vCode is invalid");
-            // }
-
-            return Ok(await _userRepo.Create(_mapper.Map<User>(userCreateDto)));
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "createCustomerByEmail");
+                throw;
+            }
         }
     }
 

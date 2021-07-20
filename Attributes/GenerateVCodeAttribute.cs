@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Verification.Services;
 using MailKit.Net.Smtp;
 using MimeKit;
+using Verification.Lib;
 
 namespace Verification.Attributes
 {
@@ -30,35 +31,19 @@ namespace Verification.Attributes
             // wait for controllers 
             var executedContext = await next();
             // controllers have finished and ready for response
-            var email = GetValueByKey(context, "Email");
+            var email = Utils.GetValueByKey(context, "parameters","Email");
+            
             if (executedContext.Result is OkObjectResult && email is not null)
             {
                 var rd = new Random();
-                var vCode = rd.Next(10000, 100000).ToString();
+                var vCode = rd.Next(10000, 100000);
                 var cacheService = context.HttpContext.RequestServices.GetRequiredService<IResponseCacheService>();
                 await cacheService.CacheResponseAsync($"VCode_{email}", vCode,
                     TimeSpan.FromSeconds(_timeToLiveSeconds));
 
                 // notice email sender to work
-                await Send(email, vCode);
+                await Send(email, vCode.ToString());
             }
-        }
-
-        private string GetValueByKey(ActionExecutingContext context, string target)
-        {
-            var email = string.Empty;
-            var param = context.ActionArguments["parameters"];
-            var props = param.GetType().GetProperties();
-            foreach (var item in props)
-            {
-                var key = item.Name;
-                if (key.Equals(target, StringComparison.OrdinalIgnoreCase))
-                {
-                    email = param.GetType().GetProperty(target)?.GetValue(param, null)?.ToString();
-                }
-            }
-
-            return email;
         }
 
         private Task Send(string email, string vCode)
@@ -84,7 +69,7 @@ namespace Verification.Attributes
                         client.Send(message);
                         client.Disconnect(true);
                     }
-                    Console.WriteLine("sending successful");
+                    Console.WriteLine("sending an email successful");
                 });
 
             }

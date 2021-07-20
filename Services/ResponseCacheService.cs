@@ -33,5 +33,10 @@ namespace Verification.Services
             var cachedResponse = await _distributedCache.GetStringAsync(cacheKey);
             return string.IsNullOrEmpty(cachedResponse) ? null : cachedResponse;
         }
+
+        public async Task RemoveCacheByKey(string cacheKey)
+        {
+            await _distributedCache.RemoveAsync(cacheKey);
+        }
     }
 }
