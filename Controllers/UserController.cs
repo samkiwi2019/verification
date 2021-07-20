@@ -59,8 +59,8 @@ namespace Verification.Controllers
                 {
                     return BadRequest("The email has been occupied");
                 }
-
-                return Ok(await _userRepo.Create(_mapper.Map<User>(userCreateDto)));
+                var user = await _userRepo.Create(_mapper.Map<User>(userCreateDto));
+                return Ok(_mapper.Map<UserReadDto>(user));
             }
             catch (Exception ex)
             {
