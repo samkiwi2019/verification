@@ -12,6 +12,7 @@ namespace Verification.Api
 {
     public class Startup
     {
+        private const string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -43,10 +44,12 @@ namespace Verification.Api
             {
                 option.SwaggerEndpoint(swaggerOptions.UiEndpoint, swaggerOptions.Description);
             });
-            
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthorization();
 
