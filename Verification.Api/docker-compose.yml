@@ -9,7 +9,7 @@ services:
     build: .
     restart: always
     ports:
-      - "5000:80"
+      - "3234:80"
     depends_on:
       - v-db-server
       - v-redis-server
@@ -23,21 +23,20 @@ services:
       MYSQL_ROOT_PASSWORD: "66778899"
       MYSQL_DATABASE: "DbVerification"
     volumes:
-      - ~/data/mysql:/var/lib/mysql 
+      - ~/data/mysql:/var/lib/mysql
     ports:
-      - "13306:3306"
+      - "23306:3306"
     security_opt:
       - seccomp:unconfined
     networks:
       - localdev
-  
+
   v-redis-server:
     image: redis
     container_name: v-redis-server
     volumes:
       - ~/data/redis:/data
     ports:
-      - "16379:6379"
+      - "26379:6379"
     networks:
       - localdev
-  
