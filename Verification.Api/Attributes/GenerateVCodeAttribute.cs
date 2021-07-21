@@ -28,11 +28,11 @@ namespace Verification.Api.Attributes
                 await next();
                 return;
             }
-            // wait for controllers 
+            // wait for controllers
             var executedContext = await next();
             // controllers have finished and ready for response
             var email = Utils.GetValueByKey(context, "parameters","Email");
-            
+
             if (executedContext.Result is OkObjectResult && email is not null)
             {
                 var rd = new Random();
