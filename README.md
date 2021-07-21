@@ -1,27 +1,59 @@
+# Online Demo (APIs)
+
+[https://vc.keenneed.com/swagger/index.html](https://vc.keenneed.com/swagger/index.html)
+
+## Online Demo (Pages)
+
+[https://vcf.keenneed.com](https://vcf.keenneed.com)
+
 ## Run the project
 
 ```shell
 
     # local env
-    # Depends on Mysql service running on port 13306
-    # Depends on Redis service running on port 16379
+
+    # Depends on Mysql and Redis
+    # You may need to modify connection string base on your own env.
+
+    "ConnectionStrings": {
+        "connection": "server=localhost;port=23306;user=root;password=*******;database=DbVerification"
+    },
+    "RedisCacheSettings": {
+        "Enabled": true,
+        "connectionString": "localhost:26379"
+    }
+
+    # update database
+    dotnet ef database update
+
+    # update ef tools
+    dotnet tool update --global dotnet-ef
+
 
     cd Verification.Api
 
     dotnet run
 
-    # To check  http://localhost:5001/swagger/index.html
+    # To check  https://localhost:3234/swagger/index.html
 
+```
 
-    # local docker env or production docker env)
+## local docker env or production docker env
+
+```shell
+
+    # make sure the database (database=DbVerification) is existed.
 
     cd Verification.Api
 
     docker compose up -d --build
 
-    # To check  http://localhost:5000/swagger/index.html
-    # note: the port is different from local.
+    or
 
+    docker-compose up -d --build (old version)
+    # To check  http://localhost:3234/swagger/index.html
+
+    # note: the protocol (http | https) is different from local.
 ```
 
 ## Unit test the project

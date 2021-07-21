@@ -23,7 +23,7 @@ services:
       MYSQL_ROOT_PASSWORD: "66778899"
       MYSQL_DATABASE: "DbVerification"
     volumes:
-      - ~/data/mysql2:/var/lib/mysql
+      - ~/data/mysql:/var/lib/mysql
     ports:
       - "23306:3306"
     security_opt:
